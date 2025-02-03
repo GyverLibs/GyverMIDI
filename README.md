@@ -51,6 +51,7 @@ virtual bool tick();
 
 #### GyverMIDISoft
 ```cpp
+// наследует GyverMIDI
 // программная пищалка
 GyverMIDISoft(uint8_t pin, const Note* notes, size_t len);
 
