@@ -7,7 +7,9 @@
 [![Foo](https://img.shields.io/badge/ПОДПИСАТЬСЯ-НА%20ОБНОВЛЕНИЯ-brightgreen.svg?style=social&logo=telegram&color=blue)](https://t.me/GyverLibs)
 
 # GyverMIDI
-xxx
+Проигрыватель миди-файлов из [конвертера](https://alexgyver.github.io/MIDI)
+- Виртуальная и программная реализация
+- Поддержка многоканальных дорожек
 
 ### Совместимость
 Совместима со всеми Arduino платформами (используются Arduino-функции)
@@ -24,16 +26,60 @@ GyverIO
 <a id="usage"></a>
 
 ## Использование
-### Инициализация
-```cpp
-```
-
 ### Описание классов
+#### GyverMIDI
 ```cpp
+// базовый класс
+GyverMIDI();
+GyverMIDI(const Note* notes, size_t len);
+
+// подключить ноты
+void setNotes(const Note* notes, size_t len);
+
+// запустить воспроизведение
+void start();
+
+// остановить воспроизведение
+void stop();
+
+// воспроизводится
+bool isPlaying();
+
+// тикер, вызывать в loop. Вернёт true в конце воспроизведения
+virtual bool tick();
 ```
 
-### Примеры
+#### GyverMIDISoft
 ```cpp
+// программная пищалка
+GyverMIDISoft(uint8_t pin, const Note* notes, size_t len);
+
+// тикер, вызывать в loop. Вернёт true в конце воспроизведения
+bool tick();
+```
+
+#### GyverMIDIMulti
+```cpp
+// многоканальный плеер
+GyverMIDIMulti(uint8_t channels);
+
+// подключить канал
+void setChannel(uint8_t n, GyverMIDI& midi);
+
+// обработчик конца воспроизведения вида void f()
+void onEnd(EndCallback cb);
+
+// запустить воспроизведение
+void start();
+
+// остановить воспроизведение
+void stop();
+
+// воспроизводится
+bool isPlaying();
+
+// тикер, вызывать в loop
+void tick();
 ```
 
 <a id="versions"></a>

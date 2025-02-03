@@ -120,7 +120,7 @@ class GyverMIDIMulti {
         _channels[n] = &midi;
     }
 
-    // обработчик конца воспроизведения
+    // обработчик конца воспроизведения вида void f()
     void onEnd(EndCallback cb) {
         _cb = cb;
     }
