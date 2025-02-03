@@ -7,9 +7,11 @@
 [![Foo](https://img.shields.io/badge/ПОДПИСАТЬСЯ-НА%20ОБНОВЛЕНИЯ-brightgreen.svg?style=social&logo=telegram&color=blue)](https://t.me/GyverLibs)
 
 # GyverMIDI
-Проигрыватель миди-файлов из [конвертера](https://alexgyver.github.io/MIDI)
+Проигрыватель MIDI-файлов из [конвертера](https://alexgyver.github.io/MIDI)
 - Виртуальная и программная реализация
 - Поддержка многоканальных дорожек
+
+> Перкуссия (каналы 9 и 10) идёт не частотами, а MIDI-нотами
 
 ### Совместимость
 Совместима со всеми Arduino платформами (используются Arduino-функции)
