@@ -33,10 +33,10 @@ GyverIO
 ```cpp
 // базовый класс
 GyverMIDI();
-GyverMIDI(const Note* notes, size_t len);
+GyverMIDI(const Note* notes, size_t len, bool pgm = true);
 
 // подключить ноты
-void setNotes(const Note* notes, size_t len);
+void setNotes(const Note* notes, size_t len, bool pgm = true);
 
 // запустить воспроизведение
 void start();
@@ -55,7 +55,7 @@ virtual bool tick();
 ```cpp
 // наследует GyverMIDI
 // программная пищалка
-GyverMIDISoft(uint8_t pin, const Note* notes, size_t len);
+GyverMIDISoft(uint8_t pin, const Note* notes, size_t len, bool pgm = true);
 
 // тикер, вызывать в loop. Вернёт true в конце воспроизведения
 bool tick();

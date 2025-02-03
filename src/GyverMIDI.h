@@ -10,23 +10,25 @@ class GyverMIDI {
     };
 
     GyverMIDI() {}
-    GyverMIDI(const Note* notes, size_t len) {
-        setNotes(notes, len);
+    GyverMIDI(const Note* notes, size_t len, bool pgm = true) {
+        setNotes(notes, len, pgm);
     }
 
     // подключить ноты
-    void setNotes(const Note* notes, size_t len) {
+    void setNotes(const Note* notes, size_t len, bool pgm = true) {
         _notes = notes;
         _len = len / sizeof(Note);
+        _pgm = pgm;
         stop();
     }
 
     // запустить воспроизведение
     void start() {
+        if (!_notes) return;
         _tmr = millis();
         if (!_tmr) --_tmr;
         _i = 0;
-        load(0);
+        _load();
         if (_note.duration) beep(_note.us, _note.duration);
     }
 
@@ -48,7 +50,7 @@ class GyverMIDI {
                 stop();
                 return true;
             } else {
-                load(_i);
+                _load();
                 if (_note.duration) beep(_note.us, _note.duration);
             }
         }
@@ -58,23 +60,25 @@ class GyverMIDI {
    protected:
     virtual void beep(uint16_t us, uint16_t duration) {}
 
-    virtual void load(uint16_t i) {
-        memcpy_P(&_note, _notes + i, sizeof(Note));
-    }
-
+   private:
     const Note* _notes = nullptr;
     Note _note;
-
-   private:
     uint16_t _tmr;
     uint16_t _len = 0;
     uint16_t _i = 0;
+    bool _pgm = true;
+
+    void _load() {
+        if (!_notes) return;
+        if (_pgm) memcpy_P(&_note, _notes + _i, sizeof(Note));
+        else _note = _notes[_i];
+    }
 };
 
 // ================ GyverMIDISoft ================
 class GyverMIDISoft : public GyverMIDI {
    public:
-    GyverMIDISoft(uint8_t pin, const Note* notes, size_t len) : GyverMIDI(notes, len), _pin(pin) {
+    GyverMIDISoft(uint8_t pin, const Note* notes, size_t len, bool pgm = true) : GyverMIDI(notes, len, pgm), _pin(pin) {
         gio::init(pin, OUTPUT);
     }
 
@@ -119,6 +123,9 @@ class GyverMIDIMulti {
     void setChannel(uint8_t n, GyverMIDI& midi) {
         _channels[n] = &midi;
     }
+    void setChannel(uint8_t n, GyverMIDI* midi) {
+        _channels[n] = midi;
+    }
 
     // обработчик конца воспроизведения вида void f()
     void onEnd(EndCallback cb) {
@@ -127,24 +134,24 @@ class GyverMIDIMulti {
 
     // запустить воспроизведение
     void start() {
-        _start = true;
+        _state = true;
         for (uint8_t i = 0; i < _len; i++) {
-            _channels[i]->start();
+            if (_channels[i]) _channels[i]->start();
         }
     }
 
     // остановить воспроизведение
     void stop() {
-        _start = false;
+        _state = false;
         for (uint8_t i = 0; i < _len; i++) {
-            _channels[i]->stop();
+            if (_channels[i]) _channels[i]->stop();
         }
     }
 
     // воспроизводится
     bool isPlaying() {
         for (uint8_t i = 0; i < _len; i++) {
-            if (_channels[i]->isPlaying()) return true;
+            if (_channels[i] && _channels[i]->isPlaying()) return true;
         }
         return false;
     }
@@ -152,11 +159,11 @@ class GyverMIDIMulti {
     // тикер, вызывать в loop
     void tick() {
         for (uint8_t i = 0; i < _len; i++) {
-            _channels[i]->tick();
+            if (_channels[i]) _channels[i]->tick();
         }
-        if (_cb && _start) {
+        if (_cb && _state) {
             if (!isPlaying()) {
-                _start = false;
+                _state = false;
                 _cb();
             }
         }
@@ -166,5 +173,5 @@ class GyverMIDIMulti {
     GyverMIDI** _channels = nullptr;
     EndCallback _cb = nullptr;
     uint8_t _len;
-    bool _start = false;
+    bool _state = false;
 };
