@@ -8,16 +8,13 @@
 
 # GyverMIDI
 Проигрыватель MIDI-файлов из [конвертера](https://alexgyver.github.io/MIDI)
-- Виртуальная и программная реализация
-- Поддержка многоканальных дорожек
-
-> Перкуссия (каналы 9 и 10) идёт не частотами, а MIDI-нотами
+- Парсинг и отправка MIDI Serial
 
 ### Совместимость
 Совместима со всеми Arduino платформами (используются Arduino-функции)
 
 ### Зависимости
-GyverIO
+- GyverIO
 
 ## Содержание
 - [Использование](#usage)
@@ -29,66 +26,12 @@ GyverIO
 
 ## Использование
 ### Описание классов
-#### GyverMIDI
-```cpp
-// базовый класс
-GyverMIDI();
-GyverMIDI(const Note* notes, size_t len, bool pgm = true);
-
-// подключить ноты
-void setNotes(const Note* notes, size_t len, bool pgm = true);
-
-// запустить воспроизведение
-void start();
-
-// остановить воспроизведение
-void stop();
-
-// воспроизводится
-bool isPlaying();
-
-// тикер, вызывать в loop. Вернёт true в конце воспроизведения
-virtual bool tick();
-```
-
-#### GyverMIDISoft
-```cpp
-// наследует GyverMIDI
-// программная пищалка
-GyverMIDISoft(uint8_t pin, const Note* notes, size_t len, bool pgm = true);
-
-// тикер, вызывать в loop. Вернёт true в конце воспроизведения
-bool tick();
-```
-
-#### GyverMIDIMulti
-```cpp
-// многоканальный плеер
-GyverMIDIMulti(uint8_t channels);
-
-// подключить канал
-void setChannel(uint8_t n, GyverMIDI& midi);
-
-// обработчик конца воспроизведения вида void f()
-void onEnd(EndCallback cb);
-
-// запустить воспроизведение
-void start();
-
-// остановить воспроизведение
-void stop();
-
-// воспроизводится
-bool isPlaying();
-
-// тикер, вызывать в loop
-void tick();
-```
 
 <a id="versions"></a>
 
 ## Версии
 - v1.0
+- v2.0 - всё переделано =)
 
 <a id="install"></a>
 ## Установка
