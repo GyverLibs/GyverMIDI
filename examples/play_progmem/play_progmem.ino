@@ -3,6 +3,9 @@
 
 #include "gravity.h"
 
+// проект в симуляторе
+// https://wokwi.com/projects/421869878672920577
+
 #define BUZ_0 3
 #define BUZ_1 4
 #define BUZ_2 5
